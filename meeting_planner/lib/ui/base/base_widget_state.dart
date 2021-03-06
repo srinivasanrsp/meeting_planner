@@ -17,21 +17,20 @@ abstract class BaseWidgetState<T, W extends StatefulWidget> extends State<W> {
 
   Widget getBlocBuilder() {
     return BlocBuilder<BaseBloc, BlocState>(
-        bloc: bloc,
         builder: (BuildContext context, BlocState state) {
-          switch (state.state) {
-            case STATE.IDLE:
-              return buildIdleWidget(context);
-            case STATE.LOADING:
-              return buildLoadingWidget(context, state);
-            case STATE.COMPLETED:
-              return buildContentWidget(context, state);
-            case STATE.ERROR:
-              return buildErrorWidget(context, state);
-            default:
-              return buildIdleWidget(context);
-          }
-        });
+      switch (state.state) {
+        case STATE.IDLE:
+          return buildIdleWidget(context);
+        case STATE.LOADING:
+          return buildLoadingWidget(context, state);
+        case STATE.COMPLETED:
+          return buildContentWidget(context, state);
+        case STATE.ERROR:
+          return buildErrorWidget(context, state);
+        default:
+          return buildIdleWidget(context);
+      }
+    });
   }
 
   Widget buildIdleWidget(BuildContext context);
