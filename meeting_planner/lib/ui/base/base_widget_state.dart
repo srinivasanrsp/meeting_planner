@@ -25,7 +25,7 @@ abstract class BaseWidgetState<T, W extends StatefulWidget> extends State<W> {
             case STATE.LOADING:
               return buildLoadingWidget(context, state);
             case STATE.COMPLETED:
-              return buildCompletedWidget(context, state);
+              return buildContentWidget(context, state);
             case STATE.ERROR:
               return buildErrorWidget(context, state);
             default:
@@ -36,9 +36,13 @@ abstract class BaseWidgetState<T, W extends StatefulWidget> extends State<W> {
 
   Widget buildIdleWidget(BuildContext context);
 
-  Widget buildLoadingWidget(BuildContext context, BlocState<dynamic> state);
+  Widget buildLoadingWidget(BuildContext context, BlocState<dynamic> state) {
+    return Container(child: Center(child: CircularProgressIndicator()));
+  }
 
-  Widget buildCompletedWidget(BuildContext context, BlocState<dynamic> state);
+  Widget buildContentWidget(BuildContext context, BlocState<dynamic> state);
 
-  Widget buildErrorWidget(BuildContext context, BlocState<dynamic> state);
+  Widget buildErrorWidget(BuildContext context, BlocState<dynamic> state) {
+    return Container();
+  }
 }
