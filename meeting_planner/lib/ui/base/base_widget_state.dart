@@ -5,10 +5,19 @@ import 'package:meeting_planner/ui/base/bloc_state.dart';
 
 /// State of widget with BLoC support. Responsible for building widgets based on
 /// the current [BlocState].
-abstract class BaseWidgetState<T, W extends StatefulWidget> extends State<W> {
-  final BaseBloc bloc;
+abstract class BaseWidgetState<B extends BaseBloc, W extends StatefulWidget>
+    extends State<W> {
+  B bloc;
 
-  BaseWidgetState(this.bloc);
+  BaseWidgetState({this.bloc});
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (bloc == null) {
+      bloc = BlocProvider.of<B>(context);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -17,31 +26,32 @@ abstract class BaseWidgetState<T, W extends StatefulWidget> extends State<W> {
 
   Widget getBlocBuilder() {
     return BlocBuilder<BaseBloc, BlocState>(
+        bloc: bloc,
         builder: (BuildContext context, BlocState state) {
-      switch (state.state) {
-        case STATE.IDLE:
-          return buildIdleWidget(context);
-        case STATE.LOADING:
-          return buildLoadingWidget(context, state);
-        case STATE.COMPLETED:
-          return buildContentWidget(context, state);
-        case STATE.ERROR:
-          return buildErrorWidget(context, state);
-        default:
-          return buildIdleWidget(context);
-      }
-    });
+          switch (state.state) {
+            case STATE.IDLE:
+              return buildIdleWidget(state);
+            case STATE.LOADING:
+              return buildLoadingWidget(state);
+            case STATE.COMPLETED:
+              return buildContentWidget(state);
+            case STATE.ERROR:
+              return buildErrorWidget(state);
+            default:
+              return buildIdleWidget(state);
+          }
+        });
   }
 
-  Widget buildIdleWidget(BuildContext context);
+  Widget buildIdleWidget(BlocState<dynamic> state);
 
-  Widget buildLoadingWidget(BuildContext context, BlocState<dynamic> state) {
+  Widget buildLoadingWidget(BlocState<dynamic> state) {
     return Container(child: Center(child: CircularProgressIndicator()));
   }
 
-  Widget buildContentWidget(BuildContext context, BlocState<dynamic> state);
+  Widget buildContentWidget(BlocState<dynamic> state);
 
-  Widget buildErrorWidget(BuildContext context, BlocState<dynamic> state) {
+  Widget buildErrorWidget(BlocState<dynamic> state) {
     return Container();
   }
 }
