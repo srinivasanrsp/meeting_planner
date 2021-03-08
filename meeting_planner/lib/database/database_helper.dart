@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:meeting_planner/utils/constants.dart';
-import 'package:meeting_planner/utils/date_utils.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -43,8 +42,8 @@ class DatabaseHelper {
         "bookingDate TEXT,"
         "duration INTEGER,"
         "meetingRoomId INTEGER,"
-        "priority INTEGER,"
-        "reminder INTEGER";
+        "priorityId INTEGER,"
+        "reminderId INTEGER";
     query += ")";
     return await db.execute(query);
   }
@@ -71,12 +70,6 @@ class DatabaseHelper {
 
   Future<List<Map<String, dynamic>>> getBookingData(DateTime dateTime) async {
     Database db = await this.database;
-    return await db.query(tableName,
-        orderBy: 'priority ASC',
-        where: 'bookingDate = ?',
-        whereArgs: [
-          DateTimeUtils.covertToServerDateTime(
-              dateTime, DateTimeUtils.PATTERN_SERVER_DATE_TIME)
-        ]);
+    return await db.query(tableName);
   }
 }

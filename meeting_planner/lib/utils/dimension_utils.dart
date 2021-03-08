@@ -1,4 +1,4 @@
-class DimensionUtils {
+class Dimension {
   static const double EMPTY = 0.0;
   static const double TINY = 1.0;
   static const double ULTRA_SMALL = 2.0;
@@ -7,6 +7,7 @@ class DimensionUtils {
   static const double MEDIUM = 8.0;
   static const double LARGE = 12.0;
   static const double X_LARGE = 16.0;
+  static const double XX_LARGE = 32.0;
 }
 
 class TextSize {

@@ -17,6 +17,8 @@ dependencies:
   sqflite: ^2.0.0+2
   path_provider: ^2.0.1
   intl: ^0.17.0
+  fluttertoast: ^7.1.8
+  flutter_local_notifications: 3.0.1+2
 
 dev_dependencies:
   flutter_test:

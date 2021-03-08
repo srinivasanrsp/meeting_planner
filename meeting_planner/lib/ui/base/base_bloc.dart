@@ -19,6 +19,10 @@ class BaseBloc extends Bloc<BlocEvent, BlocState> {
       yield BlocState(STATE.LOADING, event: blocEvent.event);
       var data = await getData(param: blocEvent.data);
       yield BlocState(STATE.COMPLETED, data: data, event: blocEvent.event);
+    } else if (blocEvent.event == Event.ADD_DATA) {
+      yield BlocState(STATE.LOADING, event: blocEvent.event);
+      var data = await addData(param: blocEvent.data);
+      yield BlocState(STATE.COMPLETED, data: data, event: blocEvent.event);
     } else if (blocEvent.event == Event.UPDATE_DATA) {
       yield BlocState(STATE.LOADING, event: blocEvent.event);
       var data = await updateData(param: blocEvent.data);

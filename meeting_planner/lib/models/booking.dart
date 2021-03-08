@@ -1,4 +1,5 @@
-import 'package:meeting_planner/models/meeting_room.dart';
+import 'package:flutter/material.dart';
+import 'package:meeting_planner/utils/data_helper.dart';
 import 'package:meeting_planner/utils/date_utils.dart';
 
 class Booking {
@@ -9,7 +10,7 @@ class Booking {
   int meetingDuration;
   MeetingRoom meetingRoom;
   Priority priority;
-  int reminderDuration;
+  Reminder reminderDuration;
 
   Booking(
       {this.bookingId,
@@ -22,19 +23,20 @@ class Booking {
       this.reminderDuration});
 
   Booking.fromJson(Map<String, dynamic> json) {
-    bookingId = json["bookingId"];
+    bookingId = json["id"];
     title = json["title"];
     description = json["description"];
-    meetingDateTime = json["meetingDateTime"] != null
-        ? DateTimeUtils.getLocalDateTimeFromServer(json["meetingDateTime"],
-            inputPattern: DateTimeUtils.PATTERN_TIME)
+    meetingDateTime = json["bookingDate"] != null
+        ? DateTimeUtils.getLocalDateTimeFromServer(json["bookingDate"],
+            inputPattern: DateTimeUtils.PATTERN_SERVER_DATE_TIME)
         : null;
-    meetingRoom = json["meetingRoom"];
-    priority = json["priority"] != null
-        ? Priority.values.elementAt(json["priority"])
-        : 0;
-    reminderDuration = json["reminder"];
     meetingDuration = json["duration"];
+    meetingRoom = DataHelper.instance.meetingRooms
+        .singleWhere((element) => element.id == json["meetingRoomId"]);
+    priority = DataHelper.instance.priorityOptions
+        .singleWhere((element) => element.id == json["priorityId"]);
+    reminderDuration = DataHelper.instance.reminderOptions
+        .singleWhere((element) => element.id == json["reminderId"]);
   }
 
   Map<String, dynamic> toJson() {
@@ -45,10 +47,34 @@ class Booking {
         meetingDateTime, DateTimeUtils.PATTERN_SERVER_DATE_TIME);
     data["duration"] = meetingDuration;
     data["meetingRoomId"] = meetingRoom.id;
-    data["priority"] = priority.index + 1;
-    data["reminder"] = reminderDuration;
+    data["priorityId"] = priority.id;
+    data["reminderId"] = reminderDuration.id;
     return data;
   }
 }
 
-enum Priority { HIGH, MEDIUM, LOW }
+class Choice {
+  int id;
+  String name;
+
+  Choice(this.id, this.name);
+}
+
+class MeetingRoom extends Choice {
+  String colorCode;
+
+  MeetingRoom({id, name, this.colorCode}) : super(id, name);
+}
+
+class Priority extends Choice {
+  int value;
+  String colorCode;
+
+  Priority({id, name, this.value, this.colorCode}) : super(id, name);
+}
+
+class Reminder extends Choice {
+  TimeOfDay duration;
+
+  Reminder({id, name, this.duration}) : super(id, name);
+}

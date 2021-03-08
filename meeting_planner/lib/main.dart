@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meeting_planner/repository/data_repository.dart';
-import 'package:meeting_planner/ui/booking_list/bloc/booking_list_bloc.dart';
-import 'package:meeting_planner/ui/booking_list/view/booking_list_page.dart';
+import 'package:meeting_planner/ui/booking_list/booking_list_bloc.dart';
+import 'package:meeting_planner/ui/booking_list/booking_list_page.dart';
 import 'package:meeting_planner/utils/constants.dart';
 
 void main() {
