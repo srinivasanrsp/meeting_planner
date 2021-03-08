@@ -112,4 +112,23 @@ class Utils {
         textColor: Colors.white,
         fontSize: 16.0);
   }
+
+  static showAlert(BuildContext context,
+      {String message, Function onConfirm, Function onCancel}) {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        // user must tap button for close dialog!
+        builder: (BuildContext context) {
+          return AlertDialog(content: Text(message), actions: <Widget>[
+            TextButton(
+                child: Text("Confirm", style: TextStyle(color: Colors.red)),
+                onPressed: onConfirm),
+            TextButton(
+                child: Text("Cancel",
+                    style: TextStyle(color: Theme.of(context).primaryColor)),
+                onPressed: onCancel)
+          ]);
+        });
+  }
 }

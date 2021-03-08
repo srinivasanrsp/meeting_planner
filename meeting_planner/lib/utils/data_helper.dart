@@ -11,6 +11,8 @@ class DataHelper {
   TimeOfDay officeStartTime;
   TimeOfDay officeEndTime;
 
+  bool isNotificationEnabled = false;
+
   DataHelper._private() {
     officeStartTime = TimeOfDay(hour: 9, minute: 0);
     officeEndTime = TimeOfDay(hour: 17, minute: 0);

@@ -21,6 +21,9 @@ class Constants {
   static const String hintSelectReminder = "Select Reminder";
   static const String labelLoading = "Loading...";
   static const String messageBooked = "Room booked successfully";
+  static const String messageCancelled = "Booking cancelled successfully";
+  static const String messageDeleteConfirm =
+      "Are you sure to cancel this booking?";
   static const String messageInvalidTime =
       "Select meeting time during office hours";
   static const String menuSettings = "Settings";

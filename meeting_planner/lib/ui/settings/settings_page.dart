@@ -1,21 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:intl/intl.dart';
+import 'package:meeting_planner/models/booking.dart';
+import 'package:meeting_planner/notification/local_notification.dart';
+import 'package:meeting_planner/ui/base/base_widget_state.dart';
+import 'package:meeting_planner/ui/base/bloc_state.dart';
+import 'package:meeting_planner/ui/booking_list/booking_list_bloc.dart';
 import 'package:meeting_planner/utils/data_helper.dart';
 import 'package:meeting_planner/utils/date_utils.dart';
 import 'package:meeting_planner/utils/dimension_utils.dart';
 import 'package:meeting_planner/utils/utils.dart';
 
 class SettingsPage extends StatefulWidget {
+  const SettingsPage();
+
   @override
   _SettingsPageState createState() => _SettingsPageState();
 }
 
-class _SettingsPageState extends State<SettingsPage> {
+class _SettingsPageState
+    extends BaseWidgetState<BookingListBloc, SettingsPage> {
   TextEditingController startTimeEditController = TextEditingController();
   TextEditingController endTimeEditController = TextEditingController();
 
   TimeOfDay startTime;
   TimeOfDay endTime;
+
+  bool isNotificationEnabled = true;
 
   @override
   void initState() {
@@ -29,10 +40,11 @@ class _SettingsPageState extends State<SettingsPage> {
     endTimeEditController.text = DateFormat(DateTimeUtils.PATTERN_HM).format(
         DateTime(
             today.year, today.month, today.day, endTime.hour, endTime.minute));
+    isNotificationEnabled = DataHelper.instance.isNotificationEnabled;
   }
 
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildContent(BlocState<dynamic> state) {
+    List<Booking> bookingList = state.data;
     return Scaffold(
       appBar: AppBar(
         title: Text("Settings"),
@@ -42,6 +54,13 @@ class _SettingsPageState extends State<SettingsPage> {
               onPressed: () {
                 DataHelper.instance.officeStartTime = startTime;
                 DataHelper.instance.officeEndTime = endTime;
+                DataHelper.instance.isNotificationEnabled =
+                    isNotificationEnabled;
+                if (isNotificationEnabled) {
+                  LocalNotification.instance.scheduledNotification(bookingList);
+                } else {
+                  LocalNotification.instance.cancel();
+                }
                 Utils.showToast("Setting saved successfully");
               })
         ],
@@ -133,6 +152,28 @@ class _SettingsPageState extends State<SettingsPage> {
                     ],
                   ),
                 ),
+              ),
+              Card(
+                margin: EdgeInsets.only(
+                    left: Dimension.MEDIUM, right: Dimension.MEDIUM),
+                child: Container(
+                  width: double.infinity,
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text("Notification",
+                            style: TextStyle(fontSize: TextSize.X_LARGE)),
+                        Switch(
+                            activeColor: Theme.of(context).primaryColor,
+                            value: isNotificationEnabled,
+                            onChanged: (value) {
+                              setState(() {
+                                isNotificationEnabled = value;
+                              });
+                            },
+                            inactiveThumbColor: Colors.white)
+                      ]),
+                ),
               )
             ],
           ),
@@ -169,5 +210,20 @@ class _SettingsPageState extends State<SettingsPage> {
     } catch (_) {
       print(_);
     }
+  }
+
+  @override
+  Widget buildContentWidget(BlocState<dynamic> state) {
+    return _buildContent(state);
+  }
+
+  @override
+  Widget buildIdleWidget(BlocState<dynamic> state) {
+    return _buildContent(state);
+  }
+
+  @override
+  Widget buildLoadingWidget(BlocState<dynamic> state) {
+    return _buildContent(state);
   }
 }

@@ -13,10 +13,10 @@ abstract class BaseWidgetState<B extends BaseBloc, W extends StatefulWidget>
 
   @override
   void didChangeDependencies() {
-    super.didChangeDependencies();
     if (bloc == null) {
       bloc = BlocProvider.of<B>(context);
     }
+    super.didChangeDependencies();
   }
 
   @override

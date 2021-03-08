@@ -78,4 +78,12 @@ class LocalNotification {
         scheduledNotificationDateTime,
         platformChannelSpecifics);
   }
+
+  void scheduledNotification(List<meeting.Booking> booking) {
+    if (booking != null) {
+      booking.forEach((element) {
+        LocalNotification.instance.scheduleNotification(element);
+      });
+    }
+  }
 }

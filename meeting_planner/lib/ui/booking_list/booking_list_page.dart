@@ -5,6 +5,7 @@ import 'package:meeting_planner/notification/local_notification.dart';
 import 'package:meeting_planner/ui/base/base_widget_state.dart';
 import 'package:meeting_planner/ui/base/bloc_event.dart';
 import 'package:meeting_planner/ui/base/bloc_state.dart';
+import 'package:meeting_planner/ui/booking_details/booking_details_page.dart';
 import 'package:meeting_planner/ui/booking_list/booking_list_bloc.dart';
 import 'package:meeting_planner/ui/new_booking/new_booking_widget.dart';
 import 'package:meeting_planner/ui/settings/settings_page.dart';
@@ -163,85 +164,101 @@ class _BookingListPageState
   }
 
   _buildBookingListItemWidget(Booking booking) {
-    return Container(
-      child: Card(
-        margin: EdgeInsets.all(Dimension.X_LARGE),
-        child: Container(
-          height: 120,
-          child: Row(
-            children: [
-              Container(
-                height: double.infinity,
-                padding: EdgeInsets.all(Dimension.LARGE),
-                color: Theme.of(context).primaryColor,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: Dimension.MEDIUM),
-                      child: Text(
-                          DateFormat(DateTimeUtils.PATTERN_H12MA)
-                              .format(booking.meetingDateTime),
-                          style: TextStyle(
-                              color: Colors.white, fontSize: TextSize.X_LARGE)),
-                    ),
-                    Text("to",
-                        style: TextStyle(
-                            color: Colors.white, fontSize: TextSize.LARGE)),
-                    Padding(
-                      padding: const EdgeInsets.only(top: Dimension.MEDIUM),
-                      child: Text(
-                          DateFormat(DateTimeUtils.PATTERN_H12MA).format(booking
-                              .meetingDateTime
-                              .add(Duration(seconds: booking.meetingDuration))),
-                          style: TextStyle(
-                              color: Colors.white, fontSize: TextSize.X_LARGE)),
-                    ),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: Container(
+    return InkWell(
+      onTap: () async {
+        final result = await Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => BookingDetailsPage(booking)));
+        if (result != null) {
+          bloc.add(BlocEvent(Event.GET_DATA, selectedDate));
+        }
+      },
+      child: Container(
+        child: Card(
+          margin: EdgeInsets.all(Dimension.X_LARGE),
+          child: Container(
+            height: 120,
+            child: Row(
+              children: [
+                Container(
                   height: double.infinity,
                   padding: EdgeInsets.all(Dimension.LARGE),
+                  color: Theme.of(context).primaryColor,
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Expanded(
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: Text(booking.title,
-                                  style: Theme.of(context).textTheme.subtitle1),
-                            ),
-                            Text(booking.priority.name,
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Utils.hexToColor(
-                                        booking.priority.colorCode)))
-                          ],
-                        ),
+                      Padding(
+                        padding:
+                            const EdgeInsets.only(bottom: Dimension.MEDIUM),
+                        child: Text(
+                            DateFormat(DateTimeUtils.PATTERN_H12MA)
+                                .format(booking.meetingDateTime),
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: TextSize.X_LARGE)),
                       ),
-                      Padding(padding: EdgeInsets.only(top: Dimension.MEDIUM)),
-                      Expanded(
-                        child: Text(booking.description,
-                            maxLines: 2,
-                            softWrap: true,
-                            overflow: TextOverflow.ellipsis,
-                            style: Theme.of(context).textTheme.subtitle2),
+                      Text("to",
+                          style: TextStyle(
+                              color: Colors.white, fontSize: TextSize.LARGE)),
+                      Padding(
+                        padding: const EdgeInsets.only(top: Dimension.MEDIUM),
+                        child: Text(
+                            DateFormat(DateTimeUtils.PATTERN_H12MA).format(
+                                booking.meetingDateTime.add(Duration(
+                                    seconds: booking.meetingDuration))),
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: TextSize.X_LARGE)),
                       ),
-                      Padding(padding: EdgeInsets.only(top: Dimension.MEDIUM)),
-                      Container(
-                        color: Utils.hexToColor(booking.meetingRoom.colorCode),
-                        padding: EdgeInsets.all(Dimension.SMALL),
-                        child: Text(booking.meetingRoom.name,
-                            style: TextStyle(color: Colors.white)),
-                      )
                     ],
                   ),
                 ),
-              )
-            ],
+                Expanded(
+                  child: Container(
+                    height: double.infinity,
+                    padding: EdgeInsets.all(Dimension.LARGE),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Text(booking.title,
+                                    style:
+                                        Theme.of(context).textTheme.subtitle1),
+                              ),
+                              Text(booking.priority.name,
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Utils.hexToColor(
+                                          booking.priority.colorCode)))
+                            ],
+                          ),
+                        ),
+                        Padding(
+                            padding: EdgeInsets.only(top: Dimension.MEDIUM)),
+                        Expanded(
+                          child: Text(booking.description,
+                              maxLines: 2,
+                              softWrap: true,
+                              overflow: TextOverflow.ellipsis,
+                              style: Theme.of(context).textTheme.subtitle2),
+                        ),
+                        Padding(
+                            padding: EdgeInsets.only(top: Dimension.MEDIUM)),
+                        Container(
+                          color:
+                              Utils.hexToColor(booking.meetingRoom.colorCode),
+                          padding: EdgeInsets.all(Dimension.SMALL),
+                          child: Text(booking.meetingRoom.name,
+                              style: TextStyle(color: Colors.white)),
+                        )
+                      ],
+                    ),
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),

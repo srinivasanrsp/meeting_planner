@@ -13,21 +13,21 @@ class MeetingPlannerApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        title: Constants.appName,
-        theme: ThemeData(
-          // This is the theme of application.
-          primarySwatch: Colors.blue,
-          visualDensity: VisualDensity.adaptivePlatformDensity,
+    return MultiBlocProvider(
+      child: MaterialApp(
+          title: Constants.appName,
+          theme: ThemeData(
+            // This is the theme of application.
+            primarySwatch: Colors.blue,
+            visualDensity: VisualDensity.adaptivePlatformDensity,
+          ),
+          debugShowCheckedModeBanner: false,
+          home: BookingListPage()),
+      providers: [
+        BlocProvider<BookingListBloc>(
+          create: (context) => BookingListBloc(DataRepository()),
         ),
-        debugShowCheckedModeBanner: false,
-        home: MultiBlocProvider(
-          child: BookingListPage(),
-          providers: [
-            BlocProvider<BookingListBloc>(
-              create: (context) => BookingListBloc(DataRepository()),
-            ),
-          ],
-        ));
+      ],
+    );
   }
 }
